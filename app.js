@@ -130,7 +130,41 @@ const subjects=[
   {q:"Which of these is a function of money?",a:["Causing scarcity","Medium of exchange","Producing all goods","Removing opportunity cost"],c:1,e:"Money serves as a medium of exchange, among other functions."},
   {q:"Unemployment occurs when people willing and able to work…",a:["Are all self-employed","Cannot find jobs","Choose to retire","Are in full-time education"],c:1,e:"Unemployment includes people available for and seeking work who cannot find jobs."},
   {q:"Specialisation can increase output mainly because it…",a:["Reduces all needs","Allows workers to focus on tasks","Removes scarcity","Makes resources unlimited"],c:1,e:"Specialisation can improve efficiency and productivity through focused tasks."}
- ]}
+ ]}, {name:"Visual Arts",icon:"🎨",desc:"Art, design and visual expression",questions:[
+{q:"Which is an element of art?",a:["Texture","Profit","Gravity","Democracy"],c:0,e:"Texture is an element of art."},
+{q:"What colour is made by mixing blue and yellow?",a:["Purple","Green","Orange","Brown"],c:1,e:"Blue and yellow make green."},
+{q:"What is the arrangement of elements in an artwork called?",a:["Composition","Dialogue","Plot","Theme"],c:0,e:"Composition is the arrangement of visual elements."},
+{q:"Which tool is commonly used to apply paint?",a:["Compass","Brush","Ruler","Sieve"],c:1,e:"A brush is used to apply paint."},
+{q:"Which technique creates depth in a drawing?",a:["Perspective","Repetition","Collage","Printing"],c:0,e:"Perspective creates an impression of depth and distance."}
+]},
+{name:"Financial Accounting",icon:"📊",desc:"Recording and interpreting financial transactions",questions:[
+{q:"What is the basic accounting equation?",a:["Assets = Capital + Liabilities","Assets = Sales - Expenses","Capital = Assets + Drawings","Liabilities = Assets + Capital"],c:0,e:"The accounting equation is Assets = Capital + Liabilities."},
+{q:"An increase in an asset is normally recorded as a?",a:["Credit","Debit","Loss","Discount"],c:1,e:"An increase in an asset is recorded as a debit."},
+{q:"Which book is known as the book of original entry?",a:["Ledger","Journal","Balance sheet","Cash book"],c:1,e:"Transactions are first recorded in the journal."},
+{q:"What is the purpose of a trial balance?",a:["Calculate tax","Check debit and credit equality","Record cash sales","List customers"],c:1,e:"A trial balance checks the arithmetical equality of debit and credit balances."},
+{q:"Goods bought for resale are recorded in which account?",a:["Purchases","Drawings","Capital","Furniture"],c:0,e:"Goods bought for resale are recorded in the purchases account."}
+]},
+{name:"Commerce",icon:"🛍️",desc:"Trade, business and commercial activities",questions:[
+{q:"Trade between different countries is called?",a:["Home trade","Foreign trade","Retail trade","Barter"],c:1,e:"Foreign trade takes place across national borders."},
+{q:"Who sells goods directly to final consumers?",a:["Wholesaler","Retailer","Manufacturer","Importer"],c:1,e:"Retailers sell goods directly to consumers."},
+{q:"Which service protects people against specified risks?",a:["Advertising","Insurance","Transport","Warehousing"],c:1,e:"Insurance provides financial protection against covered risks."},
+{q:"Which document shows goods supplied and the amount payable?",a:["Invoice","Cheque","Receipt","Catalogue"],c:0,e:"An invoice lists goods supplied and the amount due."},
+{q:"A wholesaler mainly sells goods to?",a:["Final consumers","Retailers","Employees","Students"],c:1,e:"Wholesalers generally sell goods in bulk to retailers."}
+]},
+{name:"Government",icon:"🏛️",desc:"Political institutions, constitutions and civic processes",questions:[
+{q:"Which arm of government makes laws?",a:["Executive","Legislature","Judiciary","Civil service"],c:1,e:"The legislature makes laws."},
+{q:"Which arm of government interprets the law?",a:["Judiciary","Executive","Legislature","Police"],c:0,e:"The judiciary interprets and applies the law."},
+{q:"The right to vote in an election is called?",a:["Franchise","Veto","Referendum","Impeachment"],c:0,e:"Franchise means the right to vote."},
+{q:"What is the fundamental law of a state called?",a:["Manifesto","Constitution","Campaign","Petition"],c:1,e:"A constitution contains the fundamental laws of a state."},
+{q:"Which arm implements government policies?",a:["Judiciary","Executive","Legislature","Press"],c:1,e:"The executive implements laws and government policies."}
+]},
+{name:"Literature-in-English",icon:"📚",desc:"Literary forms, themes and interpretation",questions:[
+{q:"A comparison using 'like' or 'as' is called?",a:["Metaphor","Simile","Irony","Hyperbole"],c:1,e:"A simile compares things using 'like' or 'as'."},
+{q:"Who tells the events in a story?",a:["Narrator","Audience","Publisher","Editor"],c:0,e:"The narrator tells the story."},
+{q:"A character's speech revealing private thoughts while alone is called?",a:["Soliloquy","Dialogue","Prologue","Aside"],c:0,e:"A soliloquy reveals a character's private thoughts."},
+{q:"The central idea of a literary work is its?",a:["Theme","Setting","Stanza","Rhyme"],c:0,e:"Theme is the central idea of a literary work."},
+{q:"The time and place of a story is called its?",a:["Plot","Setting","Conflict","Tone"],c:1,e:"Setting refers to the time and place of a story."}
+]}
 ];
 function topicFor(subject,q){
  const t=q.q.toLowerCase();
