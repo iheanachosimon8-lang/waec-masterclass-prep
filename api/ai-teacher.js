@@ -3,46 +3,76 @@ module.exports = async function handler(req, res) {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Use POST to ask the AI Teacher." });
   }
-  const apiKey = process.env.OPENAI_API_KEY;
+
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(503).json({ error: "The AI Teacher is not activated yet. The site owner needs to add the OPENAI_API_KEY in Vercel Environment Variables." });
+    return res.status(503).json({ error: "The AI Teacher is not activated yet. The site owner needs to add GEMINI_API_KEY in Vercel Environment Variables." });
   }
+
   const allowedSubjects = ["Mathematics","English Language","Biology","Chemistry","Physics","Economics","Visual Arts","Financial Accounting","Commerce","Government","Literature-in-English"];
   const body = req.body || {};
   const subject = allowedSubjects.includes(body.subject) ? body.subject : null;
   const messages = Array.isArray(body.messages) ? body.messages.slice(-12) : [];
+
   if (!subject) return res.status(400).json({ error: "Please choose one of the available WAEC subjects." });
   if (!messages.length || messages[messages.length - 1].role !== "user") {
     return res.status(400).json({ error: "Please enter a question for your AI Teacher." });
   }
-  const input = messages.map(m => ({
-    role: m.role === "assistant" ? "assistant" : "user",
-    content: String(m.content || "").slice(0, 2000)
+
+  const contents = messages.map(m => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: String(m.content || "").slice(0, 2000) }]
   }));
-  if (!input[input.length - 1].content.trim()) return res.status(400).json({ error: "Your question is empty." });
+
+  if (!contents[contents.length - 1].parts[0].text.trim()) {
+    return res.status(400).json({ error: "Your question is empty." });
+  }
+
+  const systemInstruction = "You are a patient, encouraging WAEC study teacher for West African secondary-school students. Teach the selected subject: " + subject + ". Explain at an appropriate secondary-school level using clear steps, definitions and worked examples when useful. For calculations, show the method and units. Ask a short follow-up practice question when appropriate. Be accurate, admit uncertainty, and never claim a prediction about examination questions. You are independent learning support, not an official WAEC service. Do not help with cheating in a live examination.";
+
   try {
-    const upstream = await fetch("https://api.openai.com/v1/responses", {
+    const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
+    const upstream = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent", {
       method: "POST",
-      headers: { "Authorization": "Bearer " + apiKey, "Content-Type": "application/json" },
+      headers: {
+        "x-goog-api-key": apiKey,
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
-        instructions: "You are a patient, encouraging WAEC study teacher for West African secondary-school students. Teach the selected subject: " + subject + ". Explain at an appropriate secondary-school level using clear steps, definitions and worked examples when useful. For calculations, show the method and units. Ask a short follow-up practice question when appropriate. Be accurate, admit uncertainty, and never claim a prediction about examination questions. You are independent learning support, not an official WAEC service. Do not help with cheating in a live examination.",
-        input,
-        max_output_tokens: 900
+        systemInstruction: {
+          parts: [{ text: systemInstruction }]
+        },
+        contents,
+        generationConfig: {
+          maxOutputTokens: 900,
+          temperature: 0.7
+        }
       })
     });
-    const data = await upstream.json();
+
+    const data = await upstream.json().catch(() => ({}));
     if (!upstream.ok) {
-      console.error("AI provider error:", data);
+      console.error("Gemini provider error:", {
+        status: upstream.status,
+        message: data.error && data.error.message ? data.error.message : "No provider message returned"
+      });
       return res.status(502).json({ error: "The AI service could not answer just now. Please try again later." });
     }
-    const reply = (data.output || []).flatMap(item => item.content || [])
-      .filter(item => item.type === "output_text")
-      .map(item => item.text).join("\n").trim();
-    if (!reply) return res.status(502).json({ error: "No explanation was returned. Please try again." });
+
+    const reply = (data.candidates || [])
+      .flatMap(candidate => candidate.content && candidate.content.parts ? candidate.content.parts : [])
+      .map(part => part.text || "")
+      .join("\n")
+      .trim();
+
+    if (!reply) {
+      console.error("Gemini returned no text. Finish reason:", data.candidates && data.candidates[0] && data.candidates[0].finishReason);
+      return res.status(502).json({ error: "No explanation was returned. Please try again." });
+    }
+
     return res.status(200).json({ reply });
   } catch (error) {
-    console.error("AI Teacher request failed:", error);
+    console.error("Gemini AI Teacher request failed:", error);
     return res.status(500).json({ error: "A connection error occurred. Please try again." });
   }
 };
